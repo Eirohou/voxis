@@ -35,14 +35,34 @@ Built with a **zero-compute, zero-cost cloud architecture** using free tiers (Gr
 
 ## 🚀 Quick Start
 
-### 1. Configure Your Free API Key
-Get a free API key at [Groq Console](https://console.groq.com) (no credit card needed).
-Copy `.env.example` to `.env` and add your key:
+### 1. First-Time Setup (Paste Key in Terminal)
+On your first run, the assistant will automatically detect that no key is configured and prompt you directly in the terminal:
 
 ```bash
+./bin/assistent
+```
+You will see:
+```text
+┌─ 🔑 First-Time Setup: Groq API Key ──────────────────────────────────────────┐
+│ No Groq API key found.                                                       │
+│ Groq provides a 100% free tier for Whisper STT and Llama 3.3 70B with        │
+│ sub-second speed.                                                            │
+│ Get your free key in 30 seconds at: https://console.groq.com/keys            │
+│                                                                              │
+│ Paste your key below (or press Enter to skip):                               │
+└──────────────────────────────────────────────────────────────────────────────┘
+Enter GROQ_API_KEY > gsk_...
+✓ API key successfully saved to .env!
+```
+
+*Alternatively, you can configure it via CLI or manually:*
+```bash
+# Directly via CLI
+./bin/assistent setup --key gsk_your_key_here
+
+# Or manually via .env
 cp .env.example .env
-# Edit .env and set:
-# GROQ_API_KEY=gsk_...
+# Edit .env and set GROQ_API_KEY=gsk_...
 ```
 
 ### 2. Run the Background Daemon
@@ -88,7 +108,7 @@ Send a one-off text query directly:
 
 ## 🧪 Running Tests
 
-The test suite contains 55 unit and integration tests covering audio capture, silence VAD, Groq STT/LLM, Edge-TTS, IPC sockets, notes, and app launcher:
+The test suite contains 58 unit and integration tests covering audio capture, silence VAD, Groq STT/LLM, Edge-TTS, IPC sockets, onboarding configuration, notes, and app launcher:
 
 ```bash
 ./.venv/bin/pytest -v

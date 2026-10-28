@@ -6,7 +6,7 @@ import os
 import sys
 from typing import Optional
 
-from assistent.config import get_config
+from assistent.config import ensure_api_key_interactive, get_config, save_api_key
 from assistent.core.agent import Agent
 from assistent.ipc import IPCClient, IPCServer
 from assistent.skills.base import default_registry
@@ -173,13 +173,27 @@ def main():
     # tui / interactive
     subparsers.add_parser("tui", help="Interactive terminal mode")
 
+    # setup / configure key
+    setup_parser = subparsers.add_parser("setup", help="Configure Groq API key")
+    setup_parser.add_argument("--key", type=str, help="API key to save directly without prompt")
+
     args = parser.parse_args()
 
     # Default to 'tui' if no command provided
     command = args.command or "tui"
 
-    if command == "daemon":
+    if command == "setup":
+        console = AssistantConsole()
+        if args.key:
+            save_api_key(args.key)
+            console.console.print("[bold green]✓ API key successfully saved to .env![/]")
+        else:
+            # Force interactive prompt even if a key already exists
+            ensure_api_key_interactive(console.console)
+
+    elif command == "daemon":
         daemon = AssistantDaemon(config_path=args.config)
+        ensure_api_key_interactive(daemon.console.console)
         try:
             asyncio.run(daemon.start())
         except KeyboardInterrupt:
@@ -200,6 +214,7 @@ def main():
             reply = client.ask(args.query)
             print(reply)
         else:
+            ensure_api_key_interactive()
             # Run standalone in-process
             async def run_standalone():
                 # Import skills to register tools
@@ -215,6 +230,10 @@ def main():
         import assistent.skills
         console = AssistantConsole()
         console.print_banner()
+
+        # First-time setup check: prompt to paste API key if missing
+        ensure_api_key_interactive(console.console)
+
         client = IPCClient()
         daemon_online = client.is_running()
 
