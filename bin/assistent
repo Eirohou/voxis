@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+REAL_SCRIPT="$(readlink -f "${BASH_SOURCE[0]}")"
+PROJECT_ROOT="$(dirname "$(dirname "$REAL_SCRIPT")")"
+export PYTHONPATH="$PROJECT_ROOT:$PYTHONPATH"
+exec "$PROJECT_ROOT/.venv/bin/python" -m assistent.cli "$@"

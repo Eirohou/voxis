@@ -1,0 +1,35 @@
+# Personal Voice AI Assistant Configuration
+
+assistant:
+  name: "Assistant"
+  trigger_mode: "push_to_talk" # "push_to_talk" or "continuous"
+  notes_dir: "./notes"
+
+llm:
+  provider: "groq"
+  model: "llama-3.3-70b-versatile" # Free tier fast model
+  fallback_model: "llama-3.1-8b-instant"
+  temperature: 0.2
+
+stt:
+  provider: "groq"
+  model: "whisper-large-v3"
+  language: null # null for auto-detect (EN / PL / DE)
+
+tts:
+  provider: "edge" # "edge" or "espeak"
+  voices:
+    en: "en-US-ChristopherNeural"
+    pl: "pl-PL-MarekNeural"
+    de: "de-DE-ConradNeural"
+  default_voice: "en-US-ChristopherNeural"
+
+audio:
+  sample_rate: 16000
+  channels: 1
+  silence_threshold_rms: 350
+  silence_duration_seconds: 1.2
+  max_recording_seconds: 30
+
+ipc:
+  socket_path: "/tmp/assistent.sock"
